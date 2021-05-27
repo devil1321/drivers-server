@@ -1,4 +1,4 @@
-let Invoice  = require('../models/invoice')
+
 const mongoose = require('mongoose')
 const Grid = require('gridfs-stream')
 
@@ -13,78 +13,8 @@ conn.once('open',()=>{
     gfs.collection('Faktury')
 })
 
+
 const get_all_invoices = (req,res) =>{
-    Invoice.find()
-     .then(faktura=>res.json(faktura))
-     .catch(err=>res.status(400).json("Error: " + err))
-}
-
-const get_invoice = (req,res) =>{
-    if(req.user !== undefined){
-        if(req.user.isActive === true){
-            Invoice.findById(req.params.id)
-            .then(user=>res.json(user))
-            .catch(err=>res.status(400).json("Error: " + err))
-        }
-        else{
-            res.redirect('/')
-        }
-    }else{
-        res.redirect('/')
-        req.logout()
-    }
-}
-
-
-const post_invoice = (req,res) =>{
-    const {userId,kwota,data,nip} = req.body
-    console.log(req.body)
-    const newInvoice = new Invoice({
-        userId:userId,
-        kwota:kwota,
-        data:data,
-        nip:nip
-    })
-    newInvoice.save()
-    .then(invoice=> res.json(invoice))
-    .catch(err =>console.log(err))
-}
-
-const delete_invoice = (req,res) =>{
-   
-            Invoice.findByIdAndDelete(req.params.id)
-            .then(user=>res.json('Exercise deleted'))
-            .catch(err=>res.status(400).json("Error: " + err))
-        
-
-}
-const update_invoice = (req,res) =>{
-    if(req.user !== undefined){
-        if(req.user.isActive === true){
-            Invoice.findById(req.params.id)
-            .then(user=>{
-            // exercise.username = req.body.username
-            // exercise.description = req.body.description
-            // exercise.duration = Number(req.body.duration)
-            // exercise.date = Date.parse(req.body.date)
-
-            user.save()
-            .then(()=>{res.json('Exercise updated!')})
-            .catch(err=>res.status(400).json('Error: ' + err))
-        })
-        } 
-        else{
-            res.redirect('/')
-        }
-    }else{
-        res.redirect('/')
-        req.logout()
-    }
-   
-}
-
-
-const get_all_invoices_docs = (req,res) =>{
     gfs.collection('Faktury')
     gfs.files.find().toArray((err,files)=>{
         if(!files || files.length === 0){
@@ -97,7 +27,7 @@ const get_all_invoices_docs = (req,res) =>{
     })
 }
 
-const get_invoice_doc = (req,res) =>{
+const get_invoice = (req,res) =>{
     gfs.collection('Faktury')
     gfs.files.findOne({filename:req.params.filename},((err,file)=>{
        if(!file || file.length === 0){
@@ -114,7 +44,14 @@ const get_invoice_doc = (req,res) =>{
        }
     }))
 }
-const delete_invoice_doc = (req,res) =>{
+const post_invoice = (req,res) =>{
+    console.log('umowa added')
+    res.json(req.body)
+}
+
+const update_invoice = (req,res) =>{}
+
+const delete_invoice = (req,res) =>{
     gfs.collection('Faktury')
     gfs.files.deleteOne({filename:req.params.filename},((err,file)=>{
        if(!file || file.length === 0){
@@ -127,13 +64,9 @@ const delete_invoice_doc = (req,res) =>{
     }))
 }
 module.exports = {
+    post_invoice,
     get_all_invoices,
     get_invoice,
-    post_invoice,
     delete_invoice,
-    update_invoice,
-    get_all_invoices_docs,
-    get_invoice_doc,
-    delete_invoice_doc
-
+    update_invoice
 }

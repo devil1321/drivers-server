@@ -9,7 +9,6 @@ const multer = require('multer')
 const GridFsStorage = require('multer-gridfs-storage')
 const Grid = require('gridfs-stream')
 
-let Invoice  = require('../models/invoice')
 
 
 
@@ -33,7 +32,7 @@ const storage = new GridFsStorage({
         if (err) {
           return reject(err);
         }
-      
+        console.log(req.body)
         const filename = buf.toString('hex') + path.extname(file.originalname);
         const metadata = {
            userId:req.body.userId,
@@ -41,7 +40,8 @@ const storage = new GridFsStorage({
            nazwisko:req.body.nazwisko,
            formaPlatnosci:req.body.formaPlatnosci,
            data:req.body.data,
-           nip:req.body.nip
+           nip:req.body.nip,
+           kwota:req.body.kwota
         }
         const fileInfo = {
           filename: filename,
@@ -57,14 +57,11 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 router.get('/', InvoiceController.get_all_invoices)
-router.get('/faktura/:id', InvoiceController.get_invoice)
+router.get('/faktura/:filename',  InvoiceController.get_invoice)
 
-router.post('/faktura',upload.single('file'), InvoiceController.post_invoice)
-router.delete('/delete/:id',InvoiceController.delete_invoice)
-router.post('/update/:id', InvoiceController.update_invoice)
+router.post('/faktura/',upload.single('file'), InvoiceController.post_invoice)
 
-router.get('/docs', InvoiceController.get_all_invoices_docs)
-router.get('/docs/:filename', InvoiceController.get_invoice_doc)
-router.delete('/docs/delete/:filename', InvoiceController.delete_invoice_doc)
+router.get('/faktura/update/:filename',  InvoiceController.update_invoice)
+router.delete('/faktura/delete/:filename', InvoiceController.delete_invoice)
 
 module.exports = router
