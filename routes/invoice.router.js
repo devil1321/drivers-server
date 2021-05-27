@@ -65,5 +65,6 @@ router.post('/update/:id', InvoiceController.update_invoice)
 
 router.get('/docs', InvoiceController.get_all_invoices_docs)
 router.get('/docs/:filename', InvoiceController.get_invoice_doc)
+router.delete('/docs/delete/:filename', InvoiceController.delete_invoice_doc)
 
 module.exports = router

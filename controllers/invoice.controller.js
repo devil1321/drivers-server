@@ -51,19 +51,12 @@ const post_invoice = (req,res) =>{
 }
 
 const delete_invoice = (req,res) =>{
-    if(req.user !== undefined){
-        if(req.user.isActive === true){
+   
             Invoice.findByIdAndDelete(req.params.id)
             .then(user=>res.json('Exercise deleted'))
             .catch(err=>res.status(400).json("Error: " + err))
-        } 
-        else{
-            res.redirect('/')
-        }
-    }else{
-        res.redirect('/')
-        req.logout()
-    }
+        
+
 }
 const update_invoice = (req,res) =>{
     if(req.user !== undefined){
@@ -121,7 +114,18 @@ const get_invoice_doc = (req,res) =>{
        }
     }))
 }
-
+const delete_invoice_doc = (req,res) =>{
+    gfs.collection('Faktury')
+    gfs.files.deleteOne({filename:req.params.filename},((err,file)=>{
+       if(!file || file.length === 0){
+           return res.status(404).json({
+               err:"not file exists"
+           })
+       }else{
+           res.status(200).json({msg:'File deleted'})
+       }
+    }))
+}
 module.exports = {
     get_all_invoices,
     get_invoice,
@@ -129,6 +133,7 @@ module.exports = {
     delete_invoice,
     update_invoice,
     get_all_invoices_docs,
-    get_invoice_doc
+    get_invoice_doc,
+    delete_invoice_doc
 
 }
