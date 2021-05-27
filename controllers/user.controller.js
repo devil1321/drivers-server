@@ -72,7 +72,6 @@ const logout_user = (req,res) =>{
     req.logout()
     res.redirect('/')
 }
-
 const get_logged_user = (req,res) =>{
     
     
@@ -86,7 +85,6 @@ const get_logged_user = (req,res) =>{
         }
     
 }
-
 const get_all_users = (req,res) =>{
     
             User.find()
@@ -114,7 +112,7 @@ const update_user = (req,res) =>{
             .then(user=>{
             console.log(req.body)
 
-                const { login, email, imie, nazwisko, dataUrodzin, plec, pesel, nrDowodu, telefon, auto, adres, nrDomu, miasto, wojewodztwo, zip } = req.body
+                const { login, email, imie, nazwisko, dataUrodzin, plec, pesel, nrDowodu, telefon, auto, adres, nrDomu, miasto, wojewodztwo, zip,pojazd,nrRej } = req.body
                 console.log(req.body)
                 user.login = login
                 user.email = email
@@ -131,6 +129,8 @@ const update_user = (req,res) =>{
                 user.miasto = miasto
                 user.wojewodztwo = wojewodztwo
                 user.zip  = zip
+                user.pojazd = pojazd
+                user.nrRej = nrRej
             user.save()
             .then(user=> res.json(user))
             .catch(err=>res.status(400).json('Error: ' + err))
@@ -144,6 +144,7 @@ const change_active_user = (req,res)=>{
             user.save().then(user=>res.json(user))
         })
 }
+
 module.exports = {
     register_user,
     login_user,

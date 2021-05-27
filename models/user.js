@@ -45,6 +45,12 @@ const UserSchema = new mongoose.Schema({
         type:Boolean,
         // required:true
     },
+    pojazd:{
+        type:String
+    },
+    nrRej:{
+        type:String
+    },
     wojewodztwo:{
         type:String
         // required:true

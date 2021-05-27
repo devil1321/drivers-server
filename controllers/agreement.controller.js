@@ -1,87 +1,64 @@
-let Agreement  = require('../models/agreement')
+const mongoose = require('mongoose')
+const Grid = require('gridfs-stream')
+
+let gfs;
+
+const MongoURI = 'mongodb://localhost:27017/DriversApp?readPreference=primary&appname=MongoDB%20Compass&ssl=false'
+const conn = mongoose.createConnection(MongoURI)
+
+conn.once('open',()=>{
+    // init stream
+    gfs = Grid(conn.db,mongoose.mongo)
+    gfs.collection('Umowy')
+})
+
 const get_all_agreements = (req,res) =>{
-    if(req.user !== undefined){
-        if(req.user.isActive === true){
-            Agreement.find()
-            .then(user=>res.json(user))
-            .catch(err=>res.status(400).json("Error: " + err))
+    gfs.collection('Umowy')
+    gfs.files.find().toArray((err,files)=>{
+        if(!files || files.length === 0){
+            return res.status(404).json({
+                err:"not file exists"
+            })
+        }else{
+            res.json(files)
         }
-        else{
-            res.redirect('/')
-        }
-    }else{
-        res.redirect('/')
-        req.logout()
-    }
+    })
 }
 const get_agreement = (req,res) =>{
-    if(req.user !== undefined){
-        if(req.user.isActive === true){
-            Agreement.findById(req.params.id)
-            .then(user=>res.json(user))
-            .catch(err=>res.status(400).json("Error: " + err))
-        }
-        else{
-            res.redirect('/')
-        }
-    }else{
-        res.redirect('/')
-        req.logout()
-    }
+    gfs.collection('Umowy')
+    gfs.files.findOne({filename:req.params.filename},((err,file)=>{
+       if(!file || file.length === 0){
+           return res.status(404).json({
+               err:"not file exists"
+           })
+       }
+       if(file.contentType === "application/pdf"){
+        //    read stream
+        const readstream = gfs.createReadStream(file.filename)
+        readstream.pipe(res)
+       }else{
+           res.status(404).json({err:"not an pdf"})
+       }
+    }))
 }
 const post_agreement = (req,res) =>{
-    const newAgreement = new Agreement({
-        email,
-        password,
-        imie,
-        nazwisko,
-        auto,
-        region
-    })
-    newAgreement.save()
-    .then(agreement=>{
-        res.json({success:'You are now registered and can log in'})
-        res.redirect('/users/login')
-    })
-    .catch(err =>console.log(err))
+    console.log('umowa added')
+    res.json(req.body)
 }
 const delete_agreement = (req,res) =>{
-    if(req.user !== undefined){
-        if(req.user.isActive === true){
-            Agreement.findByIdAndDelete(req.params.id)
-            .then(user=>res.json('Exercise deleted'))
-            .catch(err=>res.status(400).json("Error: " + err))
-        } 
-        else{
-            res.redirect('/')
-        }
-    }else{
-        res.redirect('/')
-        req.logout()
-    }
+    gfs.collection('Umowy')
+    gfs.files.deleteOne({filename:req.params.filename},((err,file)=>{
+       if(!file || file.length === 0){
+           return res.status(404).json({
+               err:"not file exists"
+           })
+       }else{
+           res.status(200).json({msg:'File deleted'})
+       }
+    }))
 }
 const update_agreement = (req,res) =>{
-    if(req.user !== undefined){
-        if(req.user.isActive === true){
-            Agreement.findById(req.params.id)
-            .then(user=>{
-            // exercise.username = req.body.username
-            // exercise.description = req.body.description
-            // exercise.duration = Number(req.body.duration)
-            // exercise.date = Date.parse(req.body.date)
-
-            user.save()
-            .then(()=>{res.json('Exercise updated!')})
-            .catch(err=>res.status(400).json('Error: ' + err))
-        })
-        } 
-        else{
-            res.redirect('/')
-        }
-    }else{
-        res.redirect('/')
-        req.logout()
-    }
+   
    
 }
 

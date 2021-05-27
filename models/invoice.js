@@ -10,7 +10,8 @@ const InvoiceSchema = new mongoose.Schema({
         data: Buffer, contentType: String 
     },
     data:{
-        type:Date
+        type:Date,
+        default:Date.now
     },
     imie:{
         type:String,
