@@ -1,4 +1,13 @@
 let Settlement  = require('../models/settlement')
+
+const mongoose = require('mongoose')
+const Grid = require('gridfs-stream')
+
+const MongoURI = 'mongodb://localhost:27017/DriversApp?readPreference=primary&appname=MongoDB%20Compass&ssl=false'
+const conn = mongoose.createConnection(MongoURI)
+
+let gfs;
+
 const get_all_settlements = (req,res) =>{
     if(req.user !== undefined){
         if(req.user.isActive === true){
@@ -6,7 +15,7 @@ const get_all_settlements = (req,res) =>{
             .then(user=>res.json(user))
             .catch(err=>res.status(400).json("Error: " + err))
         }
-        else{
+        else{   
             res.redirect('/')
         }
     }else{
@@ -14,6 +23,20 @@ const get_all_settlements = (req,res) =>{
         req.logout()
     }
 }
+
+const get_all_user_settlements = (req,res) =>{
+    gfs.collection('Rozliczenia')
+    gfs.files.find({userId:req.params.id}).toArray((err,files)=>{
+        if(!files || files.length === 0){
+            return res.status(404).json({
+                err:"not file exists"
+            })
+        }else{
+            res.json(files)
+        }
+    })
+}
+
 const get_settlement = (req,res) =>{
     if(req.user !== undefined){
         if(req.user.isActive === true){
@@ -88,6 +111,7 @@ const update_settlement = (req,res) =>{
 
 module.exports = {
     get_all_settlements,
+    get_all_user_settlements,
     get_settlement,
     post_settlement,
     delete_settlement,

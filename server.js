@@ -54,9 +54,6 @@ app.use('/rozliczenia',rozliczeniaRoute)
 app.use('/umowy',umowyRoute)
 
 
-// app.use((req,res)=>{
-//     res.status(404).send('<h1>404</h1>')
-// })
 
 connection.once('open',()=>{
     console.log('MongoDB connection established successfully')

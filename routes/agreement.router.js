@@ -59,10 +59,10 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 router.get('/', AgreementController.get_all_agreements)
+router.get('/:id', AgreementController.get_all_user_agreements)
 router.post('/umowa', upload.single('file'), AgreementController.post_agreement)
 router.get('/umowa/:filename', AgreementController.get_agreement)
 
-router.post('/update/:id', AgreementController.update_agreement)
 router.delete('/delete/:filename',AgreementController.delete_agreement)
 
 module.exports = router

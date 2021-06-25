@@ -3,6 +3,7 @@ const SettlementController = require('../controllers/settlement.controller')
 const {ensureAuthenticated}  = require('../config/auth')
 
 router.get('/', SettlementController.get_all_settlements)
+router.get('/:id', SettlementController.get_all_user_settlements)
 router.get('/rozliczenie/:id', SettlementController.get_settlement)
 
 router.get('/rozliczenie', SettlementController.post_settlement)

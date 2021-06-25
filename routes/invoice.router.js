@@ -57,11 +57,10 @@ const storage = new GridFsStorage({
 const upload = multer({ storage });
 
 router.get('/', InvoiceController.get_all_invoices)
+router.get('/:id',  InvoiceController.get_all_user_invoices)
 router.get('/faktura/:filename',  InvoiceController.get_invoice)
 
 router.post('/faktura/',upload.single('file'), InvoiceController.post_invoice)
-
-router.get('/faktura/update/:filename',  InvoiceController.update_invoice)
 router.delete('/faktura/delete/:filename', InvoiceController.delete_invoice)
 
 module.exports = router

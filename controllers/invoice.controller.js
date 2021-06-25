@@ -27,6 +27,19 @@ const get_all_invoices = (req,res) =>{
     })
 }
 
+const get_all_user_invoices = (req,res) =>{
+    gfs.collection('Faktury')
+    gfs.files.find({"metadata.userId":req.params.id}).toArray((err,files)=>{
+        if(!files || files.length === 0){
+            return res.status(404).json({
+                err:"not file exists"
+            })
+        }else{
+            res.json(files)
+        }
+    })
+}
+
 const get_invoice = (req,res) =>{
     gfs.collection('Faktury')
     gfs.files.findOne({filename:req.params.filename},((err,file)=>{
@@ -44,12 +57,12 @@ const get_invoice = (req,res) =>{
        }
     }))
 }
+
 const post_invoice = (req,res) =>{
-    console.log('umowa added')
+    console.log('faktura added')
     res.json(req.body)
 }
 
-const update_invoice = (req,res) =>{}
 
 const delete_invoice = (req,res) =>{
     gfs.collection('Faktury')
@@ -66,7 +79,7 @@ const delete_invoice = (req,res) =>{
 module.exports = {
     post_invoice,
     get_all_invoices,
+    get_all_user_invoices,
     get_invoice,
-    delete_invoice,
-    update_invoice
+    delete_invoice
 }

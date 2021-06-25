@@ -61,10 +61,10 @@ const login_user = (req,res,next) =>{
     User.findOne({email:req.body.email})
     .then(user => {
         res.json(user)
-        // passport.authenticate('local',{
-        //     successRedirect:`/users/logged-user`,
-        //     failureRedirect:'/',
-        // })(req,res,next)
+        passport.authenticate('local',{
+            successRedirect:`/users/logged-user`,
+            failureRedirect:'/',
+        })(req,res,next)
     })
 }
 const logout_user = (req,res) =>{
@@ -73,8 +73,6 @@ const logout_user = (req,res) =>{
     res.redirect('/')
 }
 const get_logged_user = (req,res) =>{
-    
-    
         if(req.user.isActive === true){
             User.find()
             .then(user =>res.json(user))

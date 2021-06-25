@@ -24,6 +24,20 @@ const get_all_agreements = (req,res) =>{
         }
     })
 }
+
+const get_all_user_agreements = (req,res) =>{
+    gfs.collection('Umowy')
+    gfs.files.find({"metadata.userId":req.params.id}).toArray((err,files)=>{
+        if(!files || files.length === 0){
+            return res.status(404).json({
+                err:"not file exists"
+            })
+        }else{
+            res.json(files)
+        }
+    })
+}
+
 const get_agreement = (req,res) =>{
     gfs.collection('Umowy')
     gfs.files.findOne({filename:req.params.filename},((err,file)=>{
@@ -45,6 +59,7 @@ const post_agreement = (req,res) =>{
     console.log('umowa added')
     res.json(req.body)
 }
+
 const delete_agreement = (req,res) =>{
     gfs.collection('Umowy')
     gfs.files.deleteOne({filename:req.params.filename},((err,file)=>{
@@ -57,15 +72,12 @@ const delete_agreement = (req,res) =>{
        }
     }))
 }
-const update_agreement = (req,res) =>{
-   
-   
-}
+
 
 module.exports = {
     get_all_agreements,
     get_agreement,
+    get_all_user_agreements,
     post_agreement,
-    delete_agreement,
-    update_agreement,
+    delete_agreement
 }
