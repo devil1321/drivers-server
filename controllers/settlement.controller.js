@@ -1,40 +1,20 @@
 let Settlement  = require('../models/settlement')
 
-const mongoose = require('mongoose')
-const Grid = require('gridfs-stream')
-
-const MongoURI = 'mongodb://localhost:27017/DriversApp?readPreference=primary&appname=MongoDB%20Compass&ssl=false'
-const conn = mongoose.createConnection(MongoURI)
-
-let gfs;
 
 const get_all_settlements = (req,res) =>{
-    if(req.user !== undefined){
-        if(req.user.isActive === true){
-            Settlement.find()
-            .then(user=>res.json(user))
-            .catch(err=>res.status(400).json("Error: " + err))
-        }
-        else{   
-            res.redirect('/')
-        }
-    }else{
-        res.redirect('/')
-        req.logout()
-    }
+    Settlement.find()
+        .then(user=>res.json(user))
+        .catch(err=>res.status(400).json("Error: " + err))
 }
 
+
 const get_all_user_settlements = (req,res) =>{
-    gfs.collection('Rozliczenia')
-    gfs.files.find({userId:req.params.id}).toArray((err,files)=>{
-        if(!files || files.length === 0){
-            return res.status(404).json({
-                err:"not file exists"
-            })
-        }else{
-            res.json(files)
-        }
+    Settlement.find({userId:req.params.id})
+    .then(user=>{
+        console.log(user)
+        res.json(user)
     })
+    .catch(err=>res.status(400).json("Error: " + err))
 }
 
 const get_settlement = (req,res) =>{
@@ -54,18 +34,41 @@ const get_settlement = (req,res) =>{
 }
 
 const post_settlement = (req,res) =>{
+    const {userId,nrFaktury,data,imie,nazwisko,zus,rejestracja,email,uberAplikacja,uberGotowka,boltAplikacja,boltGotowka,freeNowAplikacja,freeNowGotowka,calyObrot,gotowkaRazem,napiwek,bonusy,potracenia,dodatek,podatek,zwrotFv,prowizjaBolt,premia,kwotaKoncowa_1,kwotaKoncowa_2,doWyplaty} = req.body
     const newSettlement = new Settlement({
-        email,
-        password,
-        imie,
-        nazwisko,
-        auto,
-        region
+        userId:userId,
+        data:data,
+        nrFaktury:nrFaktury,
+        imie:imie,
+        nazwisko:nazwisko,
+        email:email,
+        formaPlatnosci:{
+            uberAplikacja:uberAplikacja,
+            uberGotowka:uberGotowka,
+            boltAplikacja:boltAplikacja,
+            boltGotowka:boltGotowka,
+            freeNowAplikacja:freeNowAplikacja,
+            freeNowGotowka:freeNowGotowka,
+        },
+        napiwek:napiwek,
+        bonusy:bonusy,
+        potracenia:potracenia,
+        dodatek:dodatek,
+        rejestracja:rejestracja,
+        zus:zus,
+        calyObrot:calyObrot,
+        gotowkaRazem:gotowkaRazem,
+        podatek:podatek,
+        zwrotFv:zwrotFv,
+        prowizjaBolt:prowizjaBolt,
+        premia:premia,
+        kwotaKoncowa1:kwotaKoncowa_1,
+        kwotaKoncowa2:kwotaKoncowa_2,
+        doWyplaty:doWyplaty
     })
     newSettlement.save()
     .then(settlement=>{
-        res.json({success:'You are now registered and can log in'})
-        res.redirect('/users/login')
+        res.json({success:'rozliczenie added'})
     })
     .catch(err =>console.log(err))
 }

@@ -8,28 +8,58 @@ const SettlementSchema = new mongoose.Schema({
     data:{
         type:Date
     },
+    nrFaktury:{
+        type:Number
+    },
     imie:{
         type:String,
     },
     nazwisko:{
         type:String,
     },
-    nrRozliczenia:{
-        type:Number
-    },
     email:{
         type:String,
     },
     formaPlatnosci:{
-        uber:{  
-            type:Boolean
+        uberAplikacja:{  
+            type:Number
         },
-        bolt:{  
-            type:Boolean
+        uberGotowka:{
+            type:Number
         },
-        freeNow:{  
-            type:Boolean
+        boltAplikacja:{  
+            type:Number
+        },
+        boltGotowka:{
+            type:Number
+        },
+        freeNowAplikacja:{  
+            type:Number
+        },
+        freeNowGotowka:{
+            type:Number
         }
+    },
+    calyObrot:{
+        type:Number
+    },
+    gotowkaRazem:{
+        type:Number
+    },
+    podatek:{
+        type:Number
+    },
+    zuszwrotFv:{
+        type:Number
+    },
+    prowizjaBolt:{
+        type:Number
+    },
+    premia:{
+        type:Number
+    },
+    rejestracja:{
+        type:String
     },
     napiwek:{
         type:Number

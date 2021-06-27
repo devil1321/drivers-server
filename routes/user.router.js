@@ -9,8 +9,8 @@ router.get('/logged-user', UserController.get_logged_user)
 
 router.get('/', UserController.get_all_users)
 router.get('/user/:id', UserController.get_user)
-router.delete('/delete/:id',UserController.delete_user)
 router.post('/update/:id', UserController.update_user)
 router.post('/state/:id',UserController.change_active_user)
+router.delete('/delete/:id',UserController.delete_user)
 
 module.exports = router 
